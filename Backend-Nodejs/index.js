@@ -1,9 +1,11 @@
 const mongoose = require('mongoose');
 const app = require('./app');
 
-const PORT = 3000;
+const PORT = process.env.Port || 3000;
 
-mongoose.connect('mongodb+srv://matildedanielsen_db_user:hej1234@bookapi.1qv6zk6.mongodb.net/?appName=BookAPI')
+const MONGO_URI = process.env.MONGO_URI;
+
+mongoose.connect(MONGO_URI)
 .then(() => {
     console.log("Forbundet til MongoDB");
 
