@@ -2,14 +2,14 @@ const mongoose = require('mongoose');
 const app = require('./app');
 //lille ændringer
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || process.env.WEBSITES_PORT || 8080;
 
 const MONGO_URI = process.env.MONGO_URI;
 
 mongoose.connect(MONGO_URI)
 .then(() => {
     console.log("Forbundet til MongoDB");
-    
+
     console.log("🚀 NY VERSION DEPLOYET");
 
     app.listen(PORT,'0.0.0.0', () => {
