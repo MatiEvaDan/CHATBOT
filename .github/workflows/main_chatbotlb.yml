@@ -24,8 +24,8 @@ jobs:
           node-version: '22.x'
 
       - name: npm install, build, and test
-        run: |
-          cd Backend-Nodejs
+        working-directory: Backend-Nodejs
+        run: 
           npm install
           npm run build --if-present
           npm run test --if-present
