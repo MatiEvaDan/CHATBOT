@@ -62,5 +62,5 @@ jobs:
         with:
           app-name: 'chatbotLB'
           slot-name: 'Production'
-          package: Backend-Nodejs
+          package: .
           
