@@ -2,9 +2,9 @@ const mongoose = require('mongoose');
 const app = require('./app');
 //lille ændringer
 
-console.log("PORT ENV:", process.env.PORT);
 
-const PORT = process.env.PORT;
+
+const PORT = 8080;
 
 const MONGO_URI = process.env.MONGO_URI;
 
