@@ -2,19 +2,32 @@ const mongoose = require('mongoose');
 const app = require('./app');
 //lille ændringer
 
-const PORT = process.env.Port || 3000;
+
+
+const PORT = process.env.PORT || 8080;
 
 const MONGO_URI = process.env.MONGO_URI;
+
+app.listen(PORT,'0.0.0.0', () => {
+        console.log(`Server kører på port ${PORT}`);
+    });
 
 mongoose.connect(MONGO_URI)
 .then(() => {
     console.log("Forbundet til MongoDB");
 
-    app.listen(PORT,'0.0.0.0', () => {
-        console.log(`Server kører på port ${PORT}`);
-    });
+   
 
 })
 .catch(err => {
     console.error("MongoDB forbindelse fejlede:", err);
+});
+//logging errors:
+
+process.on('uncaughtException', err => {
+  console.error('UNCAUGHT EXCEPTION:', err);
+});
+
+process.on('unhandledRejection', err => {
+  console.error('UNHANDLED REJECTION:', err);
 });

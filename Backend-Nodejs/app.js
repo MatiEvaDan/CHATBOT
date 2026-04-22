@@ -7,12 +7,24 @@ const inventoryRoutes = require('./Routes/InventoryRoutes.js');
 
 
 const app = express();
+
+app.use((req, res, next) => {
+  console.log("➡️ Request:", req.method, req.url);
+  next();
+});
+
 app.use(cors())
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Routes
+// Routess
+app.get('/', (req, res) => {
+  console.log("🔥 ROOT RAMT");
+  res.status(200).send('API virker');
+});
+
+
 app.use('/api', bookRoutes);
 app.use('/service', serviceRoutes);
 app.use('/inventory', inventoryRoutes);
