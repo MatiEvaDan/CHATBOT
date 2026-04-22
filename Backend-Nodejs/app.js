@@ -13,6 +13,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
+app.get('/', (req, res) => {
+  res.send('Server is alive');
+});
 app.use('/api', bookRoutes);
 app.use('/service', serviceRoutes);
 app.use('/inventory', inventoryRoutes);
