@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const app = require('./app');
 //lille ændringer
 
-const PORT = process.env.PORT || process.env.WEBSITES_PORT || 8080;
+const PORT = process.env.PORT || 8080;
 
 const MONGO_URI = process.env.MONGO_URI;
 
