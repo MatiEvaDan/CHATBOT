@@ -22,3 +22,12 @@ mongoose.connect(MONGO_URI)
 .catch(err => {
     console.error("MongoDB forbindelse fejlede:", err);
 });
+//logging errors:
+
+process.on('uncaughtException', err => {
+  console.error('UNCAUGHT EXCEPTION:', err);
+});
+
+process.on('unhandledRejection', err => {
+  console.error('UNHANDLED REJECTION:', err);
+});
