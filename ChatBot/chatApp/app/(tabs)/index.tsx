@@ -1,3 +1,6 @@
+import { TouchableOpacity, Text } from "react-native";
+import * as Linking from "expo-linking";
+
 import { Image } from 'expo-image';
 import { Platform, StyleSheet } from 'react-native';
 
@@ -31,9 +34,16 @@ export default function HomeScreen() {
           <ThemedText style={styles.buttonText}>Chatbot 🤖</ThemedText>
         </Link>
 
-        <Link href="/login" style={styles.button}>
-          <ThemedText style={styles.buttonText}>Login 🔐</ThemedText>
-        </Link>
+       <TouchableOpacity
+        style={styles.button}
+        onPress={() =>
+        Linking.openURL(
+        "https://chatbotlb-d4c8gngtcmgqaba2.francecentral-01.azurewebsites.net/.auth/login/aad"
+    )
+  }
+>
+  <Text style={styles.buttonText}>Login med Microsoft 🔐</Text>
+</TouchableOpacity>
       </ThemedView>
 
     

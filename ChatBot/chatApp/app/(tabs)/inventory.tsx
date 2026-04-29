@@ -1,49 +1,101 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, ActivityIndicator } from "react-native";
+import React, {useEffect, useState} from 'react';
+import {Text, View, FlatList, Button, TextInput} from 'react-native';
 
- type Book = {
-  _id: number;
-  title: string;
-  description: string;
-};
+type Inventory = {
+  _id: string,
+  title: string,
+  author: string,
+  year: number
+}
+type InventoryResponse = {
+  success: boolean;
+  count: number;
+  data: Inventory [];
 
+}
+type CreateBook = {
+  title: string,
+  author: string,
+  year: string
+}
 
-export default function BookScreen() {
-  const [books, setBooks] = useState<Book[]>([]);
-  const [loading, setLoading] = useState(true);
+const getInventoryFromAPI = () => {
+  return fetch('https://chatbotlb-d4c8gngtcmgqaba2.francecentral-01.azurewebsites.net/api/books')
+  .then(response => response.json())
+    .then(json => {
+      return (json as InventoryResponse).data;
+    })
+    .catch(error => {
+      console.error(error);
+      return [];
+    });
+}
+const createNewInventoryFromAPI = (newBook:CreateBook) => {
+  return fetch('https://chatbotlb-d4c8gngtcmgqaba2.francecentral-01.azurewebsites.net/api/books',{
+    method:'POST',
+    headers: {
+      Accept: 'application/json',
+    'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+    title: newBook.title,
+    author: newBook.author,
+    year: newBook.year
+  }),
 
-  useEffect(() => {
-    fetch("https://chatbotlb-d4c8gngtcmgqaba2.francecentral-01.azurewebsites.net/books")
-      .then(res => res.json())
-    .then(data => {
-      setBooks(data);
-      })
-      .catch(err => {
-        console.log("Fejl:", err);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
+  }) 
+    .then(response => response.json())
+    .then(json => {
+      return json
+    })
+    .catch(error => {
+      console.error(error);
+      return [];
+    }); 
+}
 
-  if (loading) {
-    return <ActivityIndicator size="large" />;
-  }
-
-
-  return (
-    <View style={{ padding: 20 }}>
+export default function Inventory(){
+  const [listInventory, setListInventory] = useState<Inventory[]>([]);
+  useEffect(()=> {
+    getInventoryFromAPI().then((data)=>{
+      setListInventory(data)
+    })    
+  },[]);
+  const [title, setTitle] = useState<string>("");
+  const [author, setAuthor] = useState<string>("");
+  const [year, setYear] = useState<string>("");
+  
+  return ( 
+   <View>
+    <View>
       <FlatList
-        data={books}
-        keyExtractor={(item) => item._id.toString()}
-        renderItem={({ item }) => (
-          <View style={{ marginBottom: 10 }}>
-            <Text style={{ fontWeight: "bold" }}>
-              {item.title}
-            </Text>
-          </View>
+        data={listInventory}
+        keyExtractor={(item) => item._id}
+        renderItem={({item})=> (
+          <Text> {item.title} - {item.author} - {item.year}</Text>  
         )}
+      /> 
+      <TextInput value={title} onChangeText={setTitle} placeholder='Titel' style={{borderWidth: 1,padding: 10}}
       />
+      <TextInput value={author} onChangeText={setAuthor} placeholder='Forfatter' style={{borderWidth: 1,padding: 10}}
+      />
+      <TextInput value={year} onChangeText={setYear} placeholder='Årstal' style={{borderWidth: 1,padding: 10}}
+      />
+
+
+      
+      <Button title="Opret nyt produkt" onPress={()=>{
+        const newBook = {title, author, year}
+        createNewInventoryFromAPI(newBook) 
+        .then(()=>{
+          alert("Produkt korrekt oprettet")
+        })
+      }}>
+      </Button>
+      
     </View>
+   </View>
   );
 }
+
+
