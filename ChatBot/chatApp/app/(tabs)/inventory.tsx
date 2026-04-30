@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Text, View, FlatList, Button, TextInput} from 'react-native';
+import {Text, View, FlatList, Button, TextInput, TouchableOpacity} from 'react-native';
 
 type Inventory = {
   _id: string,
@@ -41,7 +41,7 @@ const createNewInventoryFromAPI = (newBook:CreateBook) => {
     title: newBook.title,
     author: newBook.author,
     year: newBook.year
-  }),
+  })
 
   }) 
     .then(response => response.json())
@@ -52,6 +52,11 @@ const createNewInventoryFromAPI = (newBook:CreateBook) => {
       console.error(error);
       return [];
     }); 
+}
+const deleteInventoryFromAPI = (id) => {
+  return fetch(`https://chatbotlb-d4c8gngtcmgqaba2.francecentral-01.azurewebsites.net/api/books/${id}`,{
+    method:'DELETE'
+  })
 }
 
 export default function Inventory(){
@@ -66,36 +71,112 @@ export default function Inventory(){
   const [year, setYear] = useState<string>("");
   
   return ( 
-   <View>
     <View>
-      <FlatList
-        data={listInventory}
-        keyExtractor={(item) => item._id}
-        renderItem={({item})=> (
-          <Text> {item.title} - {item.author} - {item.year}</Text>  
-        )}
-      /> 
+
+      <View style={{padding:16}}>
+        <Text style={{
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    paddingTop: 20,
+
+      }}>
+        Nye produkter
+
+  </Text>
+  
       <TextInput value={title} onChangeText={setTitle} placeholder='Titel' style={{borderWidth: 1,padding: 10}}
       />
       <TextInput value={author} onChangeText={setAuthor} placeholder='Forfatter' style={{borderWidth: 1,padding: 10}}
       />
       <TextInput value={year} onChangeText={setYear} placeholder='Årstal' style={{borderWidth: 1,padding: 10}}
       />
-
-
-      
-      <Button title="Opret nyt produkt" onPress={()=>{
+      <TouchableOpacity onPress={()=>{
         const newBook = {title, author, year}
         createNewInventoryFromAPI(newBook) 
         .then(()=>{
-          alert("Produkt korrekt oprettet")
-        })
-      }}>
-      </Button>
+            return getInventoryFromAPI()
+        }) 
+        .then((data) => {
+    setListInventory(data)}
+        )}}
+        
+        style={{ 
+        backgroundColor: 'black',
+        paddingVertical: 6,
+        paddingHorizontal: 10,
+        borderRadius: 8,
+        marginLeft: 6 }}>
+          <Text style={{ color: 'white' }}>Opret nyt produkt</Text>
+          </TouchableOpacity>
+      </View>
+         
+          
+        
+  <View style={{ padding: 16 }}>
+  <Text style={{
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    paddingTop: 20,
+
+  }}>
+    Lagerbeholdning
+  </Text>
+          <FlatList
+        data={listInventory}
+        keyExtractor={(item) => item._id}
+        renderItem={({item})=> (
+        <View style={{
+          justifyContent:'space-between',
+          flexDirection:'row',
+          padding: 10,
+          marginVertical: 1,
+          borderWidth: 2,
+          borderRadius: 30
+        }}>
+
+        <Text style={{ fontWeight: 'bold', color: 'green' }}>{item.title}</Text>
+        <Text>{item.author} • {item.year}</Text>
+
+        <View style={{flexDirection:'row'}}>
+          <TouchableOpacity style={{ 
+        backgroundColor: 'black',
+        paddingVertical: 6,
+        paddingHorizontal: 10,
+        borderRadius: 8,
+        marginLeft: 6 }}>
+          <Text style={{ color: 'white' }}>Rediger</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={()=>{
+        deleteInventoryFromAPI(item._id) 
+        .then(()=>{
+            return getInventoryFromAPI()
+        }) 
+        .then((data) => {
+    setListInventory(data)}
+        )}}
+        style={{ 
+        backgroundColor: 'black',
+        paddingVertical: 6,
+        paddingHorizontal: 10,
+        borderRadius: 8,
+        marginLeft: 6 }}>
+          <Text style={{ color: 'white' }}>Slet</Text>
+          </TouchableOpacity>
+        </View>
+
+          </View>
+        )}
+        />
+        
+      
       
     </View>
-   </View>
-  );
-}
+     </View> 
+   
+        );
 
+      }
 
