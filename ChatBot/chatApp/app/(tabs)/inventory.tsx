@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {Text, View, FlatList, Button, TextInput, TouchableOpacity} from 'react-native';
+import {Text, View, FlatList, TextInput, TouchableOpacity, Image} from 'react-native';
 
 type Inventory = {
   _id: string,
   title: string,
   author: string,
-  year: number
+  year: number,
+  imageURL: string
 }
 type InventoryResponse = {
   success: boolean;
@@ -16,7 +17,9 @@ type InventoryResponse = {
 type CreateBook = {
   title: string,
   author: string,
-  year: string
+  year: string,
+  imageURL: string
+
 }
 
 const getInventoryFromAPI = () => {
@@ -40,7 +43,8 @@ const createNewInventoryFromAPI = (newBook:CreateBook) => {
     body: JSON.stringify({
     title: newBook.title,
     author: newBook.author,
-    year: newBook.year
+    year: newBook.year,
+    imageURL: newBook.imageURL
   })
 
   }) 
@@ -69,6 +73,7 @@ export default function Inventory(){
   const [title, setTitle] = useState<string>("");
   const [author, setAuthor] = useState<string>("");
   const [year, setYear] = useState<string>("");
+  const [imageURL, setImageURL] = useState<string>("");
   
   return ( 
     <View>
@@ -91,8 +96,13 @@ export default function Inventory(){
       />
       <TextInput value={year} onChangeText={setYear} placeholder='Årstal' style={{borderWidth: 1,padding: 10}}
       />
+      <TextInput value={imageURL} onChangeText={setImageURL} placeholder='Billede' style={{borderWidth: 1,padding: 10}}
+      />
+      {imageURL && (
+      <Image source={{uri:imageURL}} style={{ width: 100, height: 100 }} ></Image>
+      )}
       <TouchableOpacity onPress={()=>{
-        const newBook = {title, author, year}
+        const newBook = {title, author, year, imageURL}
         createNewInventoryFromAPI(newBook) 
         .then(()=>{
             return getInventoryFromAPI()
@@ -138,6 +148,7 @@ export default function Inventory(){
 
         <Text style={{ fontWeight: 'bold', color: 'green' }}>{item.title}</Text>
         <Text>{item.author} • {item.year}</Text>
+        
 
         <View style={{flexDirection:'row'}}>
           <TouchableOpacity style={{ 
