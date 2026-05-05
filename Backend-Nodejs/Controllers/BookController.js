@@ -1,4 +1,5 @@
 const bookService = require('../Services/BookService.js')
+const { BlobServiceClient } = require('@azure/storage-blob');
 class BookController {
     async create(req,res){
         try{
@@ -68,6 +69,49 @@ async getAll(req, res) {
             
         }
     }
+   
+
+async uploadImage(req, res) {
+  try {
+    // 1. tjek om der er en fil
+    if (!req.file) {
+      return res.status(400).json({ message: "Ingen fil" });
+    }
+
+    // 2. hent data
+    const buffer = req.file.buffer;
+    const fileName = Date.now() + "-" + req.file.originalname;
+
+    // 3. forbind til Azure
+    const blobServiceClient = BlobServiceClient.fromConnectionString(
+      process.env.AZURE_STORAGE_CONNECTION_STRING
+    );
+
+    const containerClient = blobServiceClient.getContainerClient(
+      process.env.AZURE_CONTAINER_NAME
+    );
+
+    // 4. lav blob
+    const blockBlobClient = containerClient.getBlockBlobClient(fileName);
+
+    // 5. upload
+    await blockBlobClient.uploadData(buffer, {
+      blobHTTPHeaders: {
+        blobContentType: req.file.mimetype
+      }
+    });
+
+    // 6. få URL
+    const imageUrl = blockBlobClient.url;
+
+    // 7. send tilbage
+    res.json({ imageUrl });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Upload fejlede" });
+  }
+}
 }
 
 module.exports = new BookController();
