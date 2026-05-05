@@ -1,6 +1,7 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
 
+import { Ionicons } from '@expo/vector-icons';
 import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors } from '@/constants/theme';
@@ -34,7 +35,7 @@ export default function TabLayout() {
         name="inventory"
         options={{
           title: 'Inventory',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="cube.box.fill" color={color} />,
+          tabBarIcon: ({ color }) => <Ionicons size={28} name="layers-outline" color={color} />,
         }}
       />
     </Tabs>
