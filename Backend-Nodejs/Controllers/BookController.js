@@ -88,7 +88,7 @@ async uploadImage(req, res) {
     );
 
     const containerClient = blobServiceClient.getContainerClient(
-      process.env.images
+      process.env.AZURE_CONTAINER_NAME
     );
 
     // 4. lav blob
